@@ -111,16 +111,17 @@ git push origin main
 
 1. Vào [vercel.com/new](https://vercel.com/new) → Import repo `anhdang17/web`
 2. **Storage** → **Create Database** → chọn **Neon (Postgres)** → Create
-3. Vercel tự gắn biến môi trường. Đổi tên/map như sau trong **Settings → Environment Variables**:
+3. Sau khi tạo Neon, vào **Settings → Environment Variables** → thêm:
 
-| Biến | Giá trị (từ Neon) |
-|------|-------------------|
-| `DATABASE_URL` | `POSTGRES_PRISMA_URL` (connection pooled) |
-| `DIRECT_URL` | `POSTGRES_URL_NON_POOLING` (direct) |
+| Biến | Giá trị |
+|------|---------|
+| `DATABASE_URL` | Copy giá trị `POSTGRES_PRISMA_URL` (hoặc `DATABASE_URL` nếu Neon tự tạo) |
 | `JWT_SECRET` | Chuỗi bí mật bất kỳ (vd: `my-secret-key-2024`) |
-| `NEXT_PUBLIC_APP_URL` | URL sau deploy (vd: `https://web-xxx.vercel.app`) |
+| `NEXT_PUBLIC_APP_URL` | URL production (vd: `https://web-xxx.vercel.app`) |
 
-4. **Deploy** — lần build đầu sẽ tự `db push` + seed 53 sản phẩm.
+4. **Deployments** → chọn deployment lỗi → **Redeploy** (hoặc push code mới).
+
+Lần build đầu sẽ tự tạo bảng + seed 53 sản phẩm (chỉ seed khi DB trống).
 
 ### Bước 3 — Deploy bằng CLI (tuỳ chọn)
 

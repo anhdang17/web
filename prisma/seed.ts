@@ -72,6 +72,12 @@ function slugify(name: string, index: number) {
 }
 
 async function main() {
+  const existing = await prisma.product.count();
+  if (existing > 0) {
+    console.log(`⏭️  Database already has ${existing} products — skip seed.`);
+    return;
+  }
+
   console.log('🌱 Seeding database...');
 
   await prisma.review.deleteMany();
