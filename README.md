@@ -95,8 +95,61 @@ SQLite lưu tại `prisma/dev.db` — một file duy nhất, đọc/ghi rất nh
 rm -f prisma/dev.db && npm run db:setup
 ```
 
+## Deploy lên Vercel
+
+SQLite **không chạy được** trên Vercel (serverless). Project dùng **PostgreSQL (Neon)** — miễn phí, tích hợp sẵn Vercel.
+
+### Bước 1 — Đẩy code lên GitHub
+
+```bash
+git add .
+git commit -m "Prepare Vercel deploy with PostgreSQL"
+git push origin main
+```
+
+### Bước 2 — Tạo project trên Vercel
+
+1. Vào [vercel.com/new](https://vercel.com/new) → Import repo `anhdang17/web`
+2. **Storage** → **Create Database** → chọn **Neon (Postgres)** → Create
+3. Vercel tự gắn biến môi trường. Đổi tên/map như sau trong **Settings → Environment Variables**:
+
+| Biến | Giá trị (từ Neon) |
+|------|-------------------|
+| `DATABASE_URL` | `POSTGRES_PRISMA_URL` (connection pooled) |
+| `DIRECT_URL` | `POSTGRES_URL_NON_POOLING` (direct) |
+| `JWT_SECRET` | Chuỗi bí mật bất kỳ (vd: `my-secret-key-2024`) |
+| `NEXT_PUBLIC_APP_URL` | URL sau deploy (vd: `https://web-xxx.vercel.app`) |
+
+4. **Deploy** — lần build đầu sẽ tự `db push` + seed 53 sản phẩm.
+
+### Bước 3 — Deploy bằng CLI (tuỳ chọn)
+
+```bash
+npm i -g vercel
+vercel login
+vercel link
+vercel env pull .env.local   # sau khi đã tạo DB trên Vercel
+vercel --prod
+```
+
+### Chạy local với Neon
+
+Copy connection string từ Neon vào `.env`:
+
+```env
+DATABASE_URL="postgresql://..."
+DIRECT_URL="postgresql://..."
+JWT_SECRET="..."
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```
+
+```bash
+npm run db:setup
+npm run dev
+```
+
 ## Ghi chú đồ án
 
 - Ảnh sản phẩm dùng [Unsplash](https://unsplash.com) (miễn phí, cần internet khi xem ảnh).
-- Đăng ký bằng email hoặc SĐT — dữ liệu lưu bảng `User` trong SQLite.
+- Đăng ký bằng email hoặc SĐT — dữ liệu lưu PostgreSQL (Neon).
 - JWT + cookie httpOnly cho phiên đăng nhập.
