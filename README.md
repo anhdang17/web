@@ -139,7 +139,6 @@ Copy connection string từ Neon vào `.env`:
 
 ```env
 DATABASE_URL="postgresql://..."
-DIRECT_URL="postgresql://..."
 JWT_SECRET="..."
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
