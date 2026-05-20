@@ -12,6 +12,7 @@
     "db:generate": "node scripts/prepare-db.mjs && prisma generate",
     "db:push": "node scripts/prepare-db.mjs && prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "db:fix-images": "tsx prisma/fix-images.ts",
     "db:setup": "node scripts/prepare-db.mjs && prisma db push && tsx prisma/seed.ts",
     "postinstall": "node scripts/prepare-db.mjs && prisma generate"
   },

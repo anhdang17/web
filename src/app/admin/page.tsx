@@ -41,7 +41,7 @@ export default function AdminPage() {
     price: '',
     category: 'AO',
     gender: 'UNISEX',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=600&fit=crop',
+    image: 'https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop',
     stock: '100',
   });
 

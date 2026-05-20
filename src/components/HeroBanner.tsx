@@ -5,17 +5,17 @@ import Image from 'next/image';
 
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=1400&h=500&fit=crop',
+    image: 'https://images.pexels.com/photos/985635/pexels-photo-985635.jpeg?auto=compress&cs=tinysrgb&w=1400&h=500&fit=crop',
     title: 'GRAPHIC TEES',
     subtitle: 'Bộ sưu tập UT mới — Unisex',
   },
   {
-    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=1400&h=500&fit=crop',
+    image: 'https://images.pexels.com/photos/7170727/pexels-photo-7170727.jpeg?auto=compress&cs=tinysrgb&w=1400&h=500&fit=crop',
     title: 'HOODIE COLLECTION',
     subtitle: 'Ấm áp — Phong cách tối giản',
   },
   {
-    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1400&h=500&fit=crop',
+    image: 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=1400&h=500&fit=crop',
     title: 'SNEAKER DROP',
     subtitle: 'Giày unisex — Hàng mới về',
   },

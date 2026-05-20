@@ -131,6 +131,7 @@ web/
 
 ## Ghi chú
 
-- Ảnh sản phẩm: [Unsplash](https://unsplash.com) (cần internet).
+- Ảnh sản phẩm: [Pexels](https://pexels.com) (cần internet khi xem ảnh).
+- Cập nhật ảnh DB: `npm run db:fix-images`
 - Dữ liệu Mac (SQLite) và Vercel (Postgres) **tách biệt** — đăng ký trên web live không hiện trên local và ngược lại.
 - Seed chỉ chạy khi database **chưa có sản phẩm** (an toàn khi redeploy Vercel).
