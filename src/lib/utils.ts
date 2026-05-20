@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
 export function formatPrice(price: number) {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -34,6 +37,6 @@ export const NAV_ITEMS = [
   'SALE',
 ] as const;
 
-export function cn(...classes: (string | false | undefined | null)[]) {
-  return classes.filter(Boolean).join(' ');
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
