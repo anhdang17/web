@@ -10,7 +10,18 @@ Giao diện lấy cảm hứng từ **Uniqlo UT**: tối giản, trắng-đen-đ
 |------------|-----------|
 | Frontend | Next.js 14, React, Tailwind CSS |
 | Backend | Next.js API Routes (REST) |
-| Database | **SQLite** + Prisma ORM (tối ưu MacBook Air M2 — không cần cài server DB) |
+| Database | **SQLite** (Mac local) + **PostgreSQL Neon** (Vercel) — Prisma ORM |
+
+## Database — Mac + Vercel
+
+Project tự chọn database theo môi trường:
+
+| Môi trường | Database | Cách hoạt động |
+|------------|----------|----------------|
+| **MacBook (local)** | SQLite `prisma/dev.db` | Nhanh, offline, không cần cài PostgreSQL |
+| **Vercel (production)** | PostgreSQL (Neon) | Lưu trữ ổn định trên serverless |
+
+Script `scripts/prepare-db.mjs` tự tạo `schema.prisma` phù hợp trước mỗi lệnh Prisma.
 
 ## Chức năng
 
@@ -30,25 +41,25 @@ Giao diện lấy cảm hứng từ **Uniqlo UT**: tối giản, trắng-đen-đ
 ## Cài đặt trên MacBook Air M2
 
 ### Yêu cầu
-- Node.js 18+ ([tải tại nodejs.org](https://nodejs.org))
+- Node.js 18+ ([nodejs.org](https://nodejs.org))
 
 ### Các bước
 
 ```bash
-# 1. Vào thư mục project
 cd "/Users/mac/Desktop/github push/web"
-
-# 2. Cài dependencies
 npm install
-
-# 3. Tạo database & seed 50 sản phẩm
-npm run db:setup
-
-# 4. Chạy website
+npm run db:setup    # SQLite + 53 sản phẩm
 npm run dev
 ```
 
-Mở trình duyệt: **http://localhost:3000**
+Mở: **http://localhost:3000**
+
+File `.env` mặc định (đã cấu hình sẵn):
+
+```env
+DATABASE_PROVIDER=sqlite
+DATABASE_URL="file:./dev.db"
+```
 
 ## Tài khoản demo
 
@@ -57,99 +68,69 @@ Mở trình duyệt: **http://localhost:3000**
 | Khách hàng | `user@gmail.com` hoặc `0901234567` | `user123` |
 | Admin | `admin@unisex.vn` | `admin123` |
 
+## Deploy lên Vercel
+
+### Bước 1 — Tạo Neon Postgres
+
+1. [vercel.com](https://vercel.com) → Project **web** → **Storage** → **Create Database** → **Neon**
+2. **Connect** database vào project
+
+### Bước 2 — Biến môi trường (Settings → Environment Variables)
+
+| Biến | Giá trị |
+|------|---------|
+| `DATABASE_PROVIDER` | `postgresql` |
+| `DATABASE_URL` | Copy `POSTGRES_PRISMA_URL` từ Neon (hoặc connection string Neon) |
+| `JWT_SECRET` | Chuỗi bí mật (vd: `my-jwt-secret-2024`) |
+| `NEXT_PUBLIC_APP_URL` | URL production (vd: `https://web-xxx.vercel.app`) |
+
+Chọn **Production**, **Preview**, **Development** → Save.
+
+### Bước 3 — Deploy
+
+```bash
+git push origin main
+# hoặc
+npx vercel --prod
+```
+
+Build trên Vercel tự chạy `scripts/vercel-build.mjs`: tạo schema PostgreSQL → `db push` → seed (nếu DB trống) → build Next.js.
+
+### Reset database local (Mac)
+
+```bash
+rm -f prisma/dev.db prisma/dev.db-journal
+npm run db:setup
+```
+
 ## Cấu trúc thư mục
 
 ```
 web/
 ├── prisma/
-│   ├── schema.prisma    # Database schema
-│   ├── seed.ts          # 50 sản phẩm + tài khoản demo
-│   └── dev.db           # SQLite file (tự tạo sau db:setup)
-├── src/
-│   ├── app/             # Pages + API routes
-│   ├── components/      # UI components
-│   ├── context/         # Auth context
-│   └── lib/             # Prisma, auth, utils
-└── package.json
+│   ├── models.prisma      # Models dùng chung (SQLite + Postgres)
+│   ├── schema.prisma      # Tự sinh bởi prepare-db.mjs
+│   ├── seed.ts
+│   └── dev.db             # SQLite — chỉ local Mac
+├── scripts/
+│   ├── prepare-db.mjs     # Chọn sqlite | postgresql
+│   └── vercel-build.mjs   # Build script cho Vercel
+└── src/lib/
+    ├── prisma.ts
+    └── db-config.ts
 ```
 
 ## API chính
 
 - `POST /api/auth/register` — Đăng ký
 - `POST /api/auth/login` — Đăng nhập
-- `POST /api/auth/logout` — Đăng xuất
-- `GET /api/products?q=&category=&gender=` — Danh sách + lọc
-- `POST /api/cart` — Thêm giỏ hàng
+- `GET /api/products?q=&category=` — Danh sách + lọc
+- `POST /api/cart` — Giỏ hàng
 - `POST /api/orders` — Đặt hàng
 - `POST /api/reviews` — Đánh giá
-- `POST /api/products` — Thêm SP (admin)
-- `DELETE /api/products/[slug]` — Xóa SP (admin)
 
-## Database
+## Ghi chú
 
-SQLite lưu tại `prisma/dev.db` — một file duy nhất, đọc/ghi rất nhanh trên SSD Mac M2. Phù hợp phát triển local và demo đồ án.
-
-Để reset dữ liệu:
-
-```bash
-rm -f prisma/dev.db && npm run db:setup
-```
-
-## Deploy lên Vercel
-
-SQLite **không chạy được** trên Vercel (serverless). Project dùng **PostgreSQL (Neon)** — miễn phí, tích hợp sẵn Vercel.
-
-### Bước 1 — Đẩy code lên GitHub
-
-```bash
-git add .
-git commit -m "Prepare Vercel deploy with PostgreSQL"
-git push origin main
-```
-
-### Bước 2 — Tạo project trên Vercel
-
-1. Vào [vercel.com/new](https://vercel.com/new) → Import repo `anhdang17/web`
-2. **Storage** → **Create Database** → chọn **Neon (Postgres)** → Create
-3. Sau khi tạo Neon, vào **Settings → Environment Variables** → thêm:
-
-| Biến | Giá trị |
-|------|---------|
-| `DATABASE_URL` | Copy giá trị `POSTGRES_PRISMA_URL` (hoặc `DATABASE_URL` nếu Neon tự tạo) |
-| `JWT_SECRET` | Chuỗi bí mật bất kỳ (vd: `my-secret-key-2024`) |
-| `NEXT_PUBLIC_APP_URL` | URL production (vd: `https://web-xxx.vercel.app`) |
-
-4. **Deployments** → chọn deployment lỗi → **Redeploy** (hoặc push code mới).
-
-Lần build đầu sẽ tự tạo bảng + seed 53 sản phẩm (chỉ seed khi DB trống).
-
-### Bước 3 — Deploy bằng CLI (tuỳ chọn)
-
-```bash
-npm i -g vercel
-vercel login
-vercel link
-vercel env pull .env.local   # sau khi đã tạo DB trên Vercel
-vercel --prod
-```
-
-### Chạy local với Neon
-
-Copy connection string từ Neon vào `.env`:
-
-```env
-DATABASE_URL="postgresql://..."
-JWT_SECRET="..."
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
-
-```bash
-npm run db:setup
-npm run dev
-```
-
-## Ghi chú đồ án
-
-- Ảnh sản phẩm dùng [Unsplash](https://unsplash.com) (miễn phí, cần internet khi xem ảnh).
-- Đăng ký bằng email hoặc SĐT — dữ liệu lưu PostgreSQL (Neon).
-- JWT + cookie httpOnly cho phiên đăng nhập.
+- Ảnh sản phẩm: [Unsplash](https://unsplash.com) (cần internet).
+- Dữ liệu Mac (SQLite) và Vercel (Postgres) **tách biệt** — đăng ký trên web live không hiện trên local và ngược lại.
+- Seed chỉ chạy khi database **chưa có sản phẩm** (an toàn khi redeploy Vercel).

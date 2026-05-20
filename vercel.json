@@ -1,5 +1,8 @@
 {
-  "buildCommand": "npm run vercel-build",
+  "buildCommand": "node scripts/vercel-build.mjs",
   "framework": "nextjs",
-  "regions": ["sin1"]
+  "regions": ["sin1"],
+  "env": {
+    "DATABASE_PROVIDER": "postgresql"
+  }
 }
