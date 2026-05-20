@@ -43,7 +43,7 @@ Script `scripts/prepare-db.mjs` tự tạo `schema.prisma` phù hợp trước m
 ### Yêu cầu
 - Node.js 18+ ([nodejs.org](https://nodejs.org))
 
-### Các bước
+### Các bước x 
 
 ```bash
 cd "/Users/mac/Desktop/github push/web"
