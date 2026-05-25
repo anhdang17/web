@@ -15,71 +15,57 @@ export default function FilterSidebar() {
   };
 
   return (
-    <div>
-      <h3 className="font-bold text-sm mb-5">Bộ lọc</h3>
+    <aside className="w-full lg:w-56 flex-shrink-0">
+      <h3 className="font-bold text-sm tracking-widest mb-4">BỘ LỌC</h3>
 
-      {/* Gender */}
-      <div className="mb-7">
-        <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-muted-foreground mb-3">Giới tính</p>
-        <div className="space-y-1">
-          {GENDERS.map((g) => (
-            <label key={g.id} className="flex items-center gap-3 py-2 cursor-pointer group">
-              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                (params.get('gender') || 'ALL') === g.id
-                  ? 'border-accent bg-accent'
-                  : 'border-border group-hover:border-muted-foreground'
-              }`}>
-                {(params.get('gender') || 'ALL') === g.id && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                )}
-              </div>
-              <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                {g.label}
-              </span>
-            </label>
-          ))}
-        </div>
+      <div className="mb-6">
+        <p className="text-xs font-bold text-brand-gray mb-2 tracking-wide">GIỚI TÍNH</p>
+        {GENDERS.map((g) => (
+          <label key={g.id} className="flex items-center gap-2 py-1.5 text-sm cursor-pointer">
+            <input
+              type="radio"
+              name="gender"
+              checked={(params.get('gender') || 'ALL') === g.id}
+              onChange={() => update('gender', g.id)}
+              className="accent-black"
+            />
+            {g.label}
+          </label>
+        ))}
       </div>
 
-      {/* Price */}
-      <div className="mb-7">
-        <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-muted-foreground mb-3">Khoảng giá</p>
-        <div className="flex gap-2 items-center">
+      <div className="mb-6">
+        <p className="text-xs font-bold text-brand-gray mb-2 tracking-wide">GIÁ (VND)</p>
+        <div className="flex gap-2">
           <input
             type="number"
             placeholder="Từ"
             defaultValue={params.get('minPrice') || ''}
-            onBlur={(e) => {
-              if (e.target.value) update('minPrice', e.target.value);
-            }}
-            className="flex-1 border border-border rounded-lg px-3 py-2 text-xs bg-background outline-none focus:ring-1 focus:ring-accent/30 focus:border-accent transition-all"
+            onBlur={(e) => update('minPrice', e.target.value)}
+            className="w-full border px-2 py-1.5 text-sm"
           />
-          <span className="text-muted-foreground text-xs">—</span>
           <input
             type="number"
             placeholder="Đến"
             defaultValue={params.get('maxPrice') || ''}
-            onBlur={(e) => {
-              if (e.target.value) update('maxPrice', e.target.value);
-            }}
-            className="flex-1 border border-border rounded-lg px-3 py-2 text-xs bg-background outline-none focus:ring-1 focus:ring-accent/30 focus:border-accent transition-all"
+            onBlur={(e) => update('maxPrice', e.target.value)}
+            className="w-full border px-2 py-1.5 text-sm"
           />
         </div>
       </div>
 
-      {/* Sort */}
       <div>
-        <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-muted-foreground mb-3">Sắp xếp</p>
+        <p className="text-xs font-bold text-brand-gray mb-2 tracking-wide">SẮP XẾP</p>
         <select
           value={params.get('sort') || 'newest'}
           onChange={(e) => update('sort', e.target.value)}
-          className="w-full border border-border rounded-lg px-3 py-2.5 text-xs bg-background outline-none focus:ring-1 focus:ring-accent/30 focus:border-accent transition-all cursor-pointer"
+          className="w-full border px-2 py-2 text-sm"
         >
           <option value="newest">Mới nhất</option>
-          <option value="price_asc">Giá: Thấp → Cao</option>
-          <option value="price_desc">Giá: Cao → Thấp</option>
+          <option value="price_asc">Giá thấp → cao</option>
+          <option value="price_desc">Giá cao → thấp</option>
         </select>
       </div>
-    </div>
+    </aside>
   );
 }

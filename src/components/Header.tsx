@@ -1,38 +1,29 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import { Search, ShoppingBag, User, Menu } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { CATEGORIES } from '@/lib/utils';
 
 const navLinks = [
-  { href: '/products?gender=UNISEX', label: 'Unisex' },
-  { href: '/products?gender=NAM', label: 'Nam' },
   { href: '/products?gender=NU', label: 'Nữ' },
+  { href: '/products?gender=NAM', label: 'Nam' },
+  { href: '/products?gender=UNISEX', label: 'Unisex' },
   { href: '/products?featured=true', label: 'Mới về' },
-  { href: '/products?salePrice=true', label: 'Sale' },
-];
+] as const;
 
 export default function Header() {
   const { user, logout, loading } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [scrolled, setScrolled] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
-  }, []);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,201 +41,189 @@ export default function Header() {
     } catch {
       toast.error('Không thể đăng xuất');
     }
-    setUserMenuOpen(false);
   };
 
   return (
-    <>
-      <header
-        className={cn(
-          'sticky top-0 z-50 w-full transition-all duration-300',
-          scrolled
-            ? 'bg-background/95 backdrop-blur-md shadow-card border-b border-border'
-            : 'bg-background border-b border-transparent'
-        )}
-      >
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-          <div className="flex h-16 items-center justify-between gap-4">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-0.5 group flex-shrink-0">
-              <span className="text-2xl font-black tracking-tighter text-accent transition-transform duration-200 group-hover:scale-105">
-                UNI
-              </span>
-              <span className="text-2xl font-black tracking-tighter text-primary transition-transform duration-200 group-hover:scale-105">
-                SEX
-              </span>
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/80 transition-all duration-200 ease-in-out">
+      <div className="container max-w-[1400px]">
+        <div className="flex h-14 min-h-14 items-center justify-between gap-4 md:h-16 md:min-h-16">
+          <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-8">
+            <Link
+              href="/"
+              className="flex shrink-0 items-center gap-1 rounded-lg outline-none ring-offset-background transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <span className="text-base font-bold tracking-tight text-brand-red md:text-xl">UNI</span>
+              <span className="text-base font-bold tracking-tight text-foreground md:text-xl">SEX</span>
             </Link>
-
-            {/* Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-1" aria-label="Danh mục chính">
-              {navLinks.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'relative px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg',
-                      isActive
-                        ? 'text-accent font-semibold'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
-                    )}
-                  >
-                    {item.label}
-                    {isActive && (
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-accent rounded-full" />
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Right actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Search */}
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => setSearchOpen(!searchOpen)}
-                className="rounded-xl hover:bg-secondary transition-colors"
-                aria-label="Tìm kiếm"
-              >
-                {searchOpen ? <X size={18} /> : <Search size={18} />}
-              </Button>
-
-              {/* Cart */}
-              <Button variant="ghost" size="icon-sm" className="rounded-xl hover:bg-secondary transition-colors relative" asChild>
-                <Link href="/cart" aria-label="Giỏ hàng">
-                  <ShoppingBag size={18} />
+            <nav className="hidden items-center gap-1 md:flex" aria-label="Danh mục chính">
+              {navLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 ease-in-out hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  {item.label}
                 </Link>
-              </Button>
+              ))}
+            </nav>
+          </div>
 
-              {/* User */}
-              {!loading && (
-                <div className="relative">
-                  {user ? (
-                    <>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="hidden sm:inline-flex gap-2 rounded-xl hover:bg-secondary transition-colors font-semibold"
-                        onClick={() => setUserMenuOpen(!userMenuOpen)}
+          <Link
+            href="/"
+            className="absolute left-1/2 hidden -translate-x-1/2 sm:block"
+            aria-label="Trang chủ UT"
+          >
+            <span className="text-2xl font-black tracking-tighter text-brand-red md:text-3xl">UT</span>
+          </Link>
+
+          <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+              onClick={() => setSearchOpen((o) => !o)}
+              aria-expanded={searchOpen}
+              aria-controls="header-search"
+              aria-label="Mở tìm kiếm"
+            >
+              <Search className="h-5 w-5" aria-hidden />
+            </Button>
+            <Button variant="ghost" size="icon" className="shrink-0" asChild>
+              <Link href="/cart" aria-label="Giỏ hàng">
+                <ShoppingBag className="h-5 w-5" aria-hidden />
+              </Link>
+            </Button>
+            {!loading &&
+              (user ? (
+                <div className="relative group">
+                  <button
+                    type="button"
+                    className="hidden min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-foreground transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 lg:inline-flex"
+                    aria-haspopup="menu"
+                    aria-expanded="false"
+                  >
+                    <User className="h-5 w-5 shrink-0" aria-hidden />
+                    <span className="max-w-[6rem] truncate">{user.name.split(' ')[0]}</span>
+                  </button>
+                  <Button variant="ghost" size="icon" className="lg:hidden" asChild>
+                    <Link href="/account" aria-label="Tài khoản">
+                      <User className="h-5 w-5" aria-hidden />
+                    </Link>
+                  </Button>
+                  <div
+                    className="invisible absolute right-0 top-full z-50 mt-2 hidden w-52 origin-top-right scale-95 rounded-xl border border-border bg-card p-1 opacity-0 shadow-lg transition-all duration-200 ease-in-out group-hover:visible group-hover:scale-100 group-hover:opacity-100 lg:block"
+                    role="menu"
+                  >
+                    <div className="border-b border-border px-3 py-2 text-xs text-muted-foreground">
+                      {user.email ?? user.phone}
+                    </div>
+                    <Link
+                      href="/account"
+                      className="block rounded-lg px-3 py-2.5 text-sm text-foreground transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      role="menuitem"
+                    >
+                      Tài khoản
+                    </Link>
+                    <Link
+                      href="/orders"
+                      className="block rounded-lg px-3 py-2.5 text-sm text-foreground transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      role="menuitem"
+                    >
+                      Đơn hàng
+                    </Link>
+                    {user.role === 'ADMIN' && (
+                      <Link
+                        href="/admin"
+                        className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-accent transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        role="menuitem"
                       >
-                        <div className="w-6 h-6 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xs font-bold">
-                          {user.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="max-w-[80px] truncate">{user.name.split(' ')[0]}</span>
-                      </Button>
-                      <Button variant="ghost" size="icon-sm" className="sm:hidden rounded-xl" asChild>
-                        <Link href="/account"><User size={18} /></Link>
-                      </Button>
-
-                      {userMenuOpen && (
-                        <>
-                          <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                          <div className="absolute right-0 top-full mt-2 z-50 w-56 bg-background rounded-2xl border border-border shadow-dropdown animate-scale-in overflow-hidden">
-                            <div className="px-4 py-3 border-b border-border bg-gradient-to-r from-accent/5 to-transparent">
-                              <p className="text-sm font-semibold truncate">{user.name}</p>
-                              <p className="text-xs text-muted-foreground truncate">{user.email || user.phone}</p>
-                            </div>
-                            <div className="py-1">
-                              <Link href="/account" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-secondary transition-colors">
-                                <User size={15} className="text-muted-foreground" />
-                                Tài khoản
-                              </Link>
-                              <Link href="/orders" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-secondary transition-colors">
-                                <ShoppingBag size={15} className="text-muted-foreground" />
-                                Đơn hàng
-                              </Link>
-                              {user.role === 'ADMIN' && (
-                                <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/5 transition-colors">
-                                  Quản trị
-                                </Link>
-                              )}
-                            </div>
-                            <div className="border-t border-border py-1">
-                              <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/5 transition-colors">
-                                Đăng xuất
-                              </button>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <Button variant="default" size="sm" className="rounded-xl font-semibold hidden sm:inline-flex" asChild>
-                      <Link href={`/login?redirect=${encodeURIComponent(pathname)}`}>
-                        Đăng nhập
+                        Quản trị
                       </Link>
-                    </Button>
-                  )}
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="w-full rounded-lg border-t border-border px-3 py-2.5 text-left text-sm text-foreground transition-colors duration-200 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      role="menuitem"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
                 </div>
-              )}
-
-              {/* Mobile menu */}
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="lg:hidden rounded-xl hover:bg-secondary transition-colors"
-                onClick={() => setDrawerOpen(true)}
-                aria-label="Mở menu"
-              >
-                <Menu size={18} />
+              ) : (
+                <Button variant="default" size="sm" className="hidden min-h-11 sm:inline-flex" asChild>
+                  <Link href={`/login?redirect=${encodeURIComponent(pathname)}`}>Đăng nhập</Link>
+                </Button>
+              ))}
+            {!loading && !user && (
+              <Button variant="ghost" size="sm" className="min-h-11 px-2 sm:hidden" asChild>
+                <Link href={`/login?redirect=${encodeURIComponent(pathname)}`}>Đăng nhập</Link>
               </Button>
-            </div>
+            )}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="shrink-0 md:hidden"
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Mở menu điều hướng"
+            >
+              <Menu className="h-5 w-5" aria-hidden />
+            </Button>
           </div>
-
-          {/* Search bar */}
-          {searchOpen && (
-            <div className="border-t border-border pb-3 pt-2 animate-slide-down">
-              <form onSubmit={handleSearch} className="relative">
-                <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Tìm áo, quần, giày, phụ kiện…"
-                  className="w-full h-11 rounded-xl border border-border bg-secondary/50 pl-11 pr-4 text-sm outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
-                />
-              </form>
-            </div>
-          )}
         </div>
-      </header>
 
-      {/* Mobile drawer */}
-      <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <SheetContent side="right" className="w-full max-w-sm flex flex-col p-0 gap-0">
-          <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-            <Link href="/" onClick={() => setDrawerOpen(false)} className="flex items-center gap-0.5">
-              <span className="text-2xl font-black tracking-tighter text-accent">UNI</span>
-              <span className="text-2xl font-black tracking-tighter text-primary">SEX</span>
-            </Link>
+        {searchOpen && (
+          <div id="header-search" className="border-t border-border pb-4 pt-2 animate-fade-in">
+            <form onSubmit={handleSearch}>
+              <label htmlFor="header-search-input" className="sr-only">
+                Tìm sản phẩm
+              </label>
+              <input
+                id="header-search-input"
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Tìm áo, quần, giày, phụ kiện…"
+                className="h-11 w-full rounded-lg border border-input bg-background px-4 text-sm text-foreground shadow-sm outline-none transition-all duration-200 placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            </form>
           </div>
-          <nav className="flex-1 overflow-y-auto py-4 px-6 space-y-1" aria-label="Menu di động">
+        )}
+      </div>
+
+      <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+          <SheetHeader className="border-b border-border p-6 text-left">
+            <SheetTitle className="text-xl font-semibold tracking-tight">Menu</SheetTitle>
+            <p className="text-sm text-muted-foreground">Danh mục & điều hướng</p>
+          </SheetHeader>
+          <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-4" aria-label="Menu di động">
             {navLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setDrawerOpen(false)}
-                className="flex items-center h-12 px-4 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-200"
+                className="flex min-h-11 items-center rounded-lg px-4 text-base font-medium text-foreground transition-colors duration-200 hover:bg-secondary active:bg-secondary/80"
               >
                 {item.label}
               </Link>
             ))}
+            <div className="my-4 h-px bg-border" />
+            {CATEGORIES.filter((c) => c.id !== 'ALL').map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/products?category=${cat.id}`}
+                onClick={() => setDrawerOpen(false)}
+                className="flex min-h-11 items-center rounded-lg px-4 text-sm font-medium uppercase tracking-wide text-muted-foreground transition-colors duration-200 hover:bg-secondary hover:text-foreground"
+              >
+                {cat.label}
+              </Link>
+            ))}
           </nav>
-          {!loading && !user && (
-            <div className="px-6 pb-6 pt-2 border-t border-border space-y-2">
-              <Link href="/login" onClick={() => setDrawerOpen(false)} className="block w-full text-center py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors">
-                Đăng nhập
-              </Link>
-              <Link href="/register" onClick={() => setDrawerOpen(false)} className="block w-full text-center py-3 border-2 border-primary text-primary rounded-xl font-semibold text-sm hover:bg-primary hover:text-primary-foreground transition-colors">
-                Đăng ký
-              </Link>
-            </div>
-          )}
         </SheetContent>
       </Sheet>
-    </>
+    </header>
   );
 }
