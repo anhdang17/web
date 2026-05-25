@@ -35,7 +35,12 @@ export async function POST(req: NextRequest) {
     };
 
     const res = jsonOk({ user: safeUser, token });
-    res.cookies.set('token', token, { httpOnly: true, maxAge: 7 * 24 * 3600, path: '/' });
+    res.cookies.set('token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 3600,
+      path: '/',
+      sameSite: 'lax',
+    });
     return res;
   } catch {
     return jsonError('Đăng nhập thất bại', 400);

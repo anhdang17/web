@@ -49,7 +49,12 @@ export async function POST(req: NextRequest) {
 
     const token = signToken({ userId: user.id, role: user.role, email: user.email });
     const res = jsonOk({ user, token });
-    res.cookies.set('token', token, { httpOnly: true, maxAge: 7 * 24 * 3600, path: '/' });
+    res.cookies.set('token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 3600,
+      path: '/',
+      sameSite: 'lax',
+    });
     return res;
   } catch (e) {
     if (e instanceof z.ZodError) return jsonError(e.errors[0].message, 400);

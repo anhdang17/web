@@ -32,5 +32,5 @@ const run = (cmd) => {
 run('node scripts/prepare-db.mjs');
 run('npx prisma generate');
 run('npx prisma db push');
-run('npx tsx prisma/seed.ts');
+run('npx prisma db seed');
 run('npx next build');
