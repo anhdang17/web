@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { Providers } from '@/components/providers';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Analytics } from '@vercel/analytics/next';
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin', 'vietnamese'],
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </AuthProvider>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
