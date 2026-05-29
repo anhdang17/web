@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { CATEGORIES } from '@/lib/utils';
+import Logo from '@/components/Logo';
 
 const navLinks = [
   { href: '/products?gender=NU', label: 'Nữ' },
@@ -50,10 +51,13 @@ export default function Header() {
           <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-8">
             <Link
               href="/"
-              className="flex shrink-0 items-center gap-1 rounded-lg outline-none ring-offset-background transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="flex shrink-0 items-center gap-2 rounded-lg outline-none ring-offset-background transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <span className="text-base font-bold tracking-tight text-brand-red md:text-xl">UNI</span>
-              <span className="text-base font-bold tracking-tight text-foreground md:text-xl">SEX</span>
+              <Logo size={36} />
+              <div className="flex items-baseline">
+                <span className="text-base font-black tracking-tight text-brand-red md:text-xl">UNI</span>
+                <span className="text-base font-black tracking-tight text-foreground md:text-xl">SEX</span>
+              </div>
             </Link>
             <nav className="hidden items-center gap-1 md:flex" aria-label="Danh mục chính">
               {navLinks.map((item) => (
@@ -71,9 +75,9 @@ export default function Header() {
           <Link
             href="/"
             className="absolute left-1/2 hidden -translate-x-1/2 sm:block"
-            aria-label="Trang chủ UT"
+            aria-label="Trang chủ UNISEX"
           >
-            <span className="text-2xl font-black tracking-tighter text-brand-red md:text-3xl">UT</span>
+            <Logo size={40} />
           </Link>
 
           <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2">

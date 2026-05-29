@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 export default function Footer() {
   return (
@@ -31,7 +32,13 @@ export default function Footer() {
 
         <div className="grid gap-10 text-sm md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           <div>
-            <p className="mb-4 text-2xl font-black tracking-tight text-brand-red">UT</p>
+            <div className="flex items-center gap-2 mb-4">
+              <Logo size={32} />
+              <div className="flex items-baseline">
+                <span className="text-lg font-black tracking-tight text-brand-red">UNI</span>
+                <span className="text-lg font-black tracking-tight text-white">SEX</span>
+              </div>
+            </div>
             <p className="max-w-xs leading-relaxed text-white/70">
               Thời trang unisex tối giản — chất lượng, phong cách, giá minh bạch.
             </p>

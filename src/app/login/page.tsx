@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import Logo from '@/components/Logo';
 
 function LoginForm() {
   const { login } = useAuth();
@@ -31,6 +32,13 @@ function LoginForm() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-16">
+      <div className="flex items-center gap-2 mb-6">
+        <Logo size={40} />
+        <div className="flex items-baseline">
+          <span className="text-xl font-black tracking-tight text-brand-red">UNI</span>
+          <span className="text-xl font-black tracking-tight text-foreground">SEX</span>
+        </div>
+      </div>
       <h1 className="text-2xl font-black mb-2">ĐĂNG NHẬP</h1>
       <p className="text-sm text-brand-gray mb-8">Dùng email Gmail hoặc số điện thoại</p>
 

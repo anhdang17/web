@@ -7,8 +7,9 @@ import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/fetcher';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/types';
+import Dashboard from '@/components/Dashboard';
 
-type Tab = 'products' | 'orders' | 'users';
+type Tab = 'dashboard' | 'products' | 'orders' | 'users';
 
 interface AdminOrder {
   id: string;
@@ -30,7 +31,7 @@ interface AdminUser {
 export default function AdminPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>('products');
+  const [tab, setTab] = useState<Tab>('dashboard');
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -102,16 +103,18 @@ export default function AdminPage() {
       <h1 className="text-2xl font-black mb-6">QUẢN TRỊ</h1>
 
       <div className="flex gap-4 border-b mb-8">
-        {(['products', 'orders', 'users'] as Tab[]).map((t) => (
+        {(['dashboard', 'products', 'orders', 'users'] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`pb-2 text-sm font-bold tracking-wide ${tab === t ? 'border-b-2 border-black' : 'text-brand-gray'}`}
+            className={`pb-2 text-sm font-bold tracking-wide transition-colors ${tab === t ? 'border-b-2 border-black text-foreground' : 'text-brand-gray hover:text-foreground'}`}
           >
-            {t === 'products' ? 'SẢN PHẨM' : t === 'orders' ? 'ĐƠN HÀNG' : 'KHÁCH HÀNG'}
+            {t === 'dashboard' ? 'DASHBOARD' : t === 'products' ? 'SẢN PHẨM' : t === 'orders' ? 'ĐƠN HÀNG' : 'KHÁCH HÀNG'}
           </button>
         ))}
       </div>
+
+      {tab === 'dashboard' && <Dashboard />}
 
       {tab === 'products' && (
         <>

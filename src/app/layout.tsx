@@ -15,6 +15,9 @@ const fontSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: 'UNISEX — Thời trang Unisex',
   description: 'Cửa hàng thời trang & phụ kiện unisex — Áo, quần, giày dép, phụ kiện',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
