@@ -44,7 +44,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/80 transition-all duration-200 ease-in-out">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/90 transition-all duration-200 ease-in-out">
       <div className="container max-w-[1400px]">
         <div className="flex h-14 min-h-14 items-center justify-between gap-4 md:h-16 md:min-h-16">
           <div className="flex min-w-0 flex-1 items-center gap-4 md:gap-8">
