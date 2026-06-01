@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from './ProductCard';
 import type { Product } from '@/types';
@@ -31,15 +32,16 @@ export default function ProductCarousel({ title, subtitle, products, viewAllHref
             {subtitle && <p className="text-sm text-brand-gray mt-1">{subtitle}</p>}
           </div>
           {viewAllHref && (
-            <a href={viewAllHref} className="text-sm text-blue-600 hover:underline whitespace-nowrap">
+            <Link href={viewAllHref} className="text-sm text-blue-600 hover:underline whitespace-nowrap">
               XEM TẤT CẢ
-            </a>
+            </Link>
           )}
         </div>
         <div className="relative">
           <button
             onClick={() => scroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border p-1.5 rounded-full shadow hidden sm:flex"
+            aria-label="Scroll left"
           >
             <ChevronLeft size={18} />
           </button>
@@ -56,13 +58,14 @@ export default function ProductCarousel({ title, subtitle, products, viewAllHref
           <button
             onClick={() => scroll('right')}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border p-1.5 rounded-full shadow hidden sm:flex"
+            aria-label="Scroll right"
           >
             <ChevronRight size={18} />
           </button>
         </div>
         <div className="flex justify-center gap-1.5 mt-2">
           {[0, 1, 2].map((i) => (
-            <span key={i} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-black' : 'bg-gray-300'}`} />
+            <span key={i} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-black' : 'bg-gray-300'}`} aria-hidden />
           ))}
         </div>
       </div>

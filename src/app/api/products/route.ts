@@ -1,10 +1,10 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAuthUser, requireAdmin } from '@/lib/auth';
 import { jsonOk, jsonError } from '@/lib/api-response';
 import { z } from 'zod';
 
 async function enrichProducts(products: Awaited<ReturnType<typeof prisma.product.findMany>>) {
+  if (products.length === 0) return [];
   const ids = products.map((p) => p.id);
   const reviews = await prisma.review.groupBy({
     by: ['productId'],
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   const maxPrice = searchParams.get('maxPrice');
   const sort = searchParams.get('sort') || 'newest';
   const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50);
 
   const where: Record<string, unknown> = {};
 
@@ -57,17 +57,19 @@ export async function GET(req: NextRequest) {
         : { createdAt: 'desc' as const };
 
   const [products, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
+    enrichProducts(
+      await prisma.product.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+      })
+    ),
     prisma.product.count({ where }),
   ]);
 
   return jsonOk({
-    products: await enrichProducts(products),
+    products,
     total,
     page,
     totalPages: Math.ceil(total / limit),
@@ -75,20 +77,21 @@ export async function GET(req: NextRequest) {
 }
 
 const createSchema = z.object({
-  name: z.string().min(1),
-  description: z.string(),
-  price: z.number().positive(),
-  salePrice: z.number().optional(),
-  category: z.string(),
+  name: z.string().min(1).max(200),
+  description: z.string().max(2000),
+  price: z.number().positive().max(1_000_000_000),
+  salePrice: z.number().positive().optional(),
+  category: z.string().min(1),
   subcategory: z.string().optional(),
   gender: z.string().default('UNISEX'),
   image: z.string().url(),
-  stock: z.number().int().default(100),
+  stock: z.number().int().min(0).default(100),
   featured: z.boolean().default(false),
 });
 
 export async function POST(req: NextRequest) {
   try {
+    const { getAuthUser, requireAdmin } = await import('@/lib/auth');
     const user = await getAuthUser(req);
     requireAdmin(user);
 
@@ -113,7 +116,7 @@ export async function POST(req: NextRequest) {
     });
     return jsonOk(product, 201);
   } catch (e) {
-    const msg = e instanceof Error ? e.message : 'Lỗi';
+    const msg = e instanceof Error ? e.message : '';
     if (msg === 'UNAUTHORIZED') return jsonError('Chưa đăng nhập', 401);
     if (msg === 'FORBIDDEN') return jsonError('Không có quyền', 403);
     return jsonError('Thêm sản phẩm thất bại', 400);

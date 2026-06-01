@@ -4,27 +4,53 @@
 
 @layer base {
   :root {
-    /* 60-30-10: nền sáng, chữ đậm, accent xanh */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 6.7%;
+    /* Fashion Brand Palette - Monochrome Luxury */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 7%;
+
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 6.7%;
+    --card-foreground: 0 0% 7%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 6.7%;
-    --primary: 0 0% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 6% 96%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 240 6% 96%;
-    --muted-foreground: 240 4% 46%;
-    --accent: 221 83% 53%;
+    --popover-foreground: 0 0% 7%;
+
+    /* Primary: Near black for luxury feel */
+    --primary: 0 0% 7%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Warm grays */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 7%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Accent: Pure black */
+    --accent: 0 0% 7%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 221 83% 53%;
-    --radius: 0.5rem;
+
+    --destructive: 0 0% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 7%;
+
+    --radius: 0px;
+
+    /* Brand colors */
+    --brand-black: #111111;
+    --brand-dark: #1A1A1A;
+    --brand-white: #FFFFFF;
+    --brand-light: #F5F5F5;
+    --brand-border: #EAEAEA;
+    --brand-muted: #DADADA;
+
+    /* Functional colors - subtle */
+    --sale: 0 0% 45%;
+    --new: 0 0% 7%;
+    --success: 140 60% 35%;
+    --error: 0 60% 50%;
   }
 
   * {
@@ -33,13 +59,26 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: 'rlig' 1, 'calt' 1;
+    font-feature-settings: 'kern' 1, 'liga' 1;
     font-size: 0.9375rem;
     line-height: 1.6;
+  }
+
+  /* Typography Scale */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: var(--brand-black);
+    color: var(--brand-white);
   }
 }
 
@@ -56,7 +95,16 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -64,6 +112,51 @@
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out;
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-slide-out {
+  animation: slideOutRight 0.3s ease-out forwards;
+}
+
+/* Stagger children animations */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeUp 0.5s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 500ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 600ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 700ms; }

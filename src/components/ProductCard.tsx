@@ -18,7 +18,7 @@ export default function ProductCard({ product }: { product: Product }) {
           alt={product.name}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
-          sizes="200px"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
         />
         {hasSale && (
           <span className="absolute top-2 left-2 bg-brand-red text-white text-[10px] font-bold px-1.5 py-0.5">
@@ -31,7 +31,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="flex items-center gap-1 mb-1">
         {product.avgRating ? (
           <>
-            <Star size={10} className="fill-black text-black" />
+            <Star size={10} className="fill-black text-black" aria-hidden />
             <span className="text-xs">{product.avgRating.toFixed(1)}</span>
             <span className="text-xs text-brand-gray">({product.reviewCount})</span>
           </>

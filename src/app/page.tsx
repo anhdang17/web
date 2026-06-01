@@ -1,29 +1,14 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import HeroBanner from '@/components/HeroBanner';
 import ProductCarousel from '@/components/ProductCarousel';
 import CategoryNav from '@/components/CategoryNav';
-import Link from 'next/link';
-import { api } from '@/lib/fetcher';
-import type { Product } from '@/types';
+import { getHomePageData } from '@/lib/data';
 import { CATEGORIES } from '@/lib/utils';
 
-export default function HomePage() {
-  const [featured, setFeatured] = useState<Product[]>([]);
-  const [byCategory, setByCategory] = useState<Record<string, Product[]>>({});
+export const revalidate = 60;
 
-  useEffect(() => {
-    api<{ products: Product[] }>('/api/products?featured=true&limit=12').then((d) =>
-      setFeatured(d.products)
-    );
-    const cats = ['AO', 'QUAN', 'PHU_KIEN', 'GIAY'];
-    cats.forEach((cat) => {
-      api<{ products: Product[] }>(`/api/products?category=${cat}&limit=8`).then((d) =>
-        setByCategory((prev) => ({ ...prev, [cat]: d.products }))
-      );
-    });
-  }, []);
+export default async function HomePage() {
+  const { featured, byCategory } = await getHomePageData();
 
   const catLabels: Record<string, string> = {
     AO: 'ÁO',

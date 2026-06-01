@@ -198,6 +198,7 @@ export default function Dashboard() {
                       src={product.image}
                       alt={product.name}
                       className="object-cover w-full h-full"
+                      loading="lazy"
                     />
                   </div>
                   <div className="flex-1 min-w-0">

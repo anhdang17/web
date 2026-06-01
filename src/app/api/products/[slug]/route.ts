@@ -3,21 +3,26 @@ import { prisma } from '@/lib/prisma';
 import { getAuthUser, requireAdmin } from '@/lib/auth';
 import { jsonOk, jsonError } from '@/lib/api-response';
 
-export async function GET(_req: NextRequest, { params }: { params: { slug: string } }) {
-  const product = await prisma.product.findUnique({ where: { slug: params.slug } });
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
+  const product = await prisma.product.findUnique({ where: { slug } });
   if (!product) return jsonError('Không tìm thấy sản phẩm', 404);
 
-  const reviews = await prisma.review.findMany({
-    where: { productId: product.id },
-    include: { user: { select: { name: true } } },
-    orderBy: { createdAt: 'desc' },
-  });
-
-  const agg = await prisma.review.aggregate({
-    where: { productId: product.id },
-    _avg: { rating: true },
-    _count: true,
-  });
+  const [reviews, agg] = await Promise.all([
+    prisma.review.findMany({
+      where: { productId: product.id },
+      include: { user: { select: { name: true } } },
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.review.aggregate({
+      where: { productId: product.id },
+      _avg: { rating: true },
+      _count: true,
+    }),
+  ]);
 
   return jsonOk({
     product: {
@@ -29,11 +34,12 @@ export async function GET(_req: NextRequest, { params }: { params: { slug: strin
   });
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   try {
+    const { slug } = await params;
     const user = await getAuthUser(req);
     requireAdmin(user);
-    await prisma.product.delete({ where: { slug: params.slug } });
+    await prisma.product.delete({ where: { slug } });
     return jsonOk({ message: 'Đã xóa sản phẩm' });
   } catch (e) {
     const msg = e instanceof Error ? e.message : '';
@@ -42,13 +48,14 @@ export async function DELETE(req: NextRequest, { params }: { params: { slug: str
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   try {
+    const { slug } = await params;
     const user = await getAuthUser(req);
     requireAdmin(user);
     const body = await req.json();
     const product = await prisma.product.update({
-      where: { slug: params.slug },
+      where: { slug },
       data: body,
     });
     return jsonOk(product);
