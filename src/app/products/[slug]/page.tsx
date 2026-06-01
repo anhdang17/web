@@ -18,7 +18,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return { title: 'Không tìm thấy' };
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://unisex.vn';
-  const price = product.salePrice ?? product.price;
 
   return {
     title: product.name,
@@ -39,21 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  const products = await prisma.product.findMany({
-    select: { slug: true },
-    take: 100,
-  });
-  return products.map((p) => ({ slug: p.slug }));
-}
-
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
   const product = await prisma.product.findUnique({ where: { slug } });
 
   if (!product) notFound();
 
-  const [reviews, agg] = await Promise.all([
+  const [reviews, agg, relatedProducts] = await Promise.all([
     prisma.review.findMany({
       where: { productId: product.id },
       include: { user: { select: { name: true } } },
@@ -63,6 +54,14 @@ export default async function ProductDetailPage({ params }: Props) {
       where: { productId: product.id },
       _avg: { rating: true },
       _count: true,
+    }),
+    prisma.product.findMany({
+      where: {
+        category: product.category,
+        id: { not: product.id },
+      },
+      take: 4,
+      orderBy: { createdAt: 'desc' },
     }),
   ]);
 
@@ -88,7 +87,11 @@ export default async function ProductDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd }}
       />
-      <ProductDetailClient product={enrichedProduct} reviews={reviews} />
+      <ProductDetailClient
+        product={enrichedProduct}
+        reviews={reviews}
+        relatedProducts={relatedProducts}
+      />
     </>
   );
 }

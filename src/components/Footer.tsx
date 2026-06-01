@@ -1,129 +1,135 @@
 import Link from 'next/link';
-import { ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import Logo from '@/components/Logo';
+
+const footerLinks = {
+  shop: [
+    { label: 'Áo', href: '/products?category=AO' },
+    { label: 'Quần', href: '/products?category=QUAN' },
+    { label: 'Áo khoác', href: '/products?category=AO_KHOAC' },
+    { label: 'Giày', href: '/products?category=GIAY' },
+    { label: 'Phụ kiện', href: '/products?category=PHU_KIEN' },
+  ],
+  help: [
+    { label: 'Hướng dẫn chọn size', href: '#' },
+    { label: 'Vận chuyển & Giao hàng', href: '#' },
+    { label: 'Đổi trả & Hoàn tiền', href: '#' },
+    { label: 'Thanh toán', href: '#' },
+    { label: 'Liên hệ', href: '#' },
+  ],
+  company: [
+    { label: 'Về chúng tôi', href: '#' },
+    { label: 'Tuyển dụng', href: '#' },
+    { label: 'Bền vững', href: '#' },
+  ],
+};
 
 export default function Footer() {
   return (
-    <footer className="mt-16 border-t border-border bg-primary text-primary-foreground">
-      <div className="container max-w-[1400px] py-12 md:py-16">
-        <div className="mb-12 grid gap-6 sm:grid-cols-3">
-          <div className="flex gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition-all duration-200 hover:bg-white/10">
-            <Truck className="h-8 w-8 shrink-0 text-accent" aria-hidden />
-            <div>
-              <p className="text-sm font-semibold">Giao hàng nhanh</p>
-              <p className="mt-1 text-xs leading-relaxed text-white/70">Toàn quốc, theo dõi đơn trực tuyến</p>
-            </div>
-          </div>
-          <div className="flex gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition-all duration-200 hover:bg-white/10">
-            <ShieldCheck className="h-8 w-8 shrink-0 text-accent" aria-hidden />
-            <div>
-              <p className="text-sm font-semibold">Thanh toán an toàn</p>
-              <p className="mt-1 text-xs leading-relaxed text-white/70">Bảo mật thông tin khách hàng</p>
-            </div>
-          </div>
-          <div className="flex gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition-all duration-200 hover:bg-white/10">
-            <RotateCcw className="h-8 w-8 shrink-0 text-accent" aria-hidden />
-            <div>
-              <p className="text-sm font-semibold">Đổi trả linh hoạt</p>
-              <p className="mt-1 text-xs leading-relaxed text-white/70">Hỗ trợ trong vòng 7 ngày</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid gap-10 text-sm md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
+    <footer className="bg-brand-black text-white">
+      {/* Main Footer */}
+      <div className="container max-w-[1400px] mx-auto px-4 md:px-8 py-16 md:py-24">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
+            <div className="flex items-center gap-2 mb-6">
               <Logo size={32} />
-              <div className="flex items-baseline">
-                <span className="text-lg font-black tracking-tight text-brand-red">UNI</span>
-                <span className="text-lg font-black tracking-tight text-white">SEX</span>
-              </div>
             </div>
-            <p className="max-w-xs leading-relaxed text-white/70">
-              Thời trang unisex tối giản — chất lượng, phong cách, giá minh bạch.
+            <p className="text-sm text-white/60 leading-relaxed max-w-xs">
+              Thời trang tối giản cho mọi người. Chất lượng cao, thiết kế hiện đại, giá cả hợp lý.
             </p>
           </div>
-          <nav aria-labelledby="footer-nav-cat">
-            <h2 id="footer-nav-cat" className="mb-4 text-xs font-semibold uppercase tracking-wider text-white/90">
-              Danh mục
-            </h2>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/products?category=AO"
-                  className="text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary rounded-sm"
-                >
-                  Áo
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/products?category=QUAN"
-                  className="text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary rounded-sm"
-                >
-                  Quần
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/products?category=PHU_KIEN"
-                  className="text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary rounded-sm"
-                >
-                  Phụ kiện
-                </Link>
-              </li>
-            </ul>
-          </nav>
+
+          {/* Shop */}
           <div>
-            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-white/90">Hỗ trợ</h2>
-            <ul className="space-y-3 text-white/70">
-              <li>Hotline: 1900 xxxx</li>
-              <li>
-                <a
-                  href="mailto:support@unisex.vn"
-                  className="transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
-                >
-                  support@unisex.vn
-                </a>
-              </li>
-              <li>Giao hàng toàn quốc</li>
+            <h3 className="text-xs font-medium tracking-widest uppercase mb-6">Cửa hàng</h3>
+            <ul className="space-y-3">
+              {footerLinks.shop.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
-          <nav aria-labelledby="footer-nav-account">
-            <h2 id="footer-nav-account" className="mb-4 text-xs font-semibold uppercase tracking-wider text-white/90">
-              Tài khoản
-            </h2>
+
+          {/* Help */}
+          <div>
+            <h3 className="text-xs font-medium tracking-widest uppercase mb-6">Hỗ trợ</h3>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/login"
-                  className="text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary rounded-sm"
-                >
-                  Đăng nhập
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/register"
-                  className="text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary rounded-sm"
-                >
-                  Đăng ký
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cart"
-                  className="text-white/70 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary rounded-sm"
-                >
-                  Giỏ hàng
-                </Link>
-              </li>
+              {footerLinks.help.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
-          </nav>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h3 className="text-xs font-medium tracking-widest uppercase mb-6">Công ty</h3>
+            <ul className="space-y-3">
+              {footerLinks.company.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-white/60 hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div className="col-span-2 md:col-span-2 lg:col-span-1">
+            <h3 className="text-xs font-medium tracking-widest uppercase mb-6">Bản tin</h3>
+            <p className="text-sm text-white/60 mb-4">
+              Nhận thông tin về sản phẩm mới và ưu đãi đặc biệt.
+            </p>
+            <form className="flex" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="email"
+                placeholder="Email của bạn"
+                className="flex-1 bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-white transition-colors"
+              />
+              <button
+                type="submit"
+                className="bg-white text-brand-black px-6 py-3 text-xs font-medium tracking-widest uppercase hover:bg-brand-light transition-colors"
+              >
+                Đăng ký
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-      <div className="border-t border-white/10 py-6 text-center text-xs text-white/50">
-        © {new Date().getFullYear()} UNISEX Fashion Store — Dự án sinh viên
+
+      {/* Bottom Bar */}
+      <div className="border-t border-white/10">
+        <div className="container max-w-[1400px] mx-auto px-4 md:px-8 py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-white/40">
+              © {new Date().getFullYear()} UNISEX. Tất cả quyền được bảo lưu.
+            </p>
+            <div className="flex items-center gap-6">
+              <Link href="#" className="text-xs text-white/40 hover:text-white transition-colors">
+                Chính sách bảo mật
+              </Link>
+              <Link href="#" className="text-xs text-white/40 hover:text-white transition-colors">
+                Điều khoản sử dụng
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );

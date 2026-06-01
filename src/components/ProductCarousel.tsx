@@ -1,8 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from './ProductCard';
 import type { Product } from '@/types';
 
@@ -14,60 +12,52 @@ interface Props {
 }
 
 export default function ProductCarousel({ title, subtitle, products, viewAllHref }: Props) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const scroll = (dir: 'left' | 'right') => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: dir === 'left' ? -400 : 400, behavior: 'smooth' });
-  };
-
   if (!products.length) return null;
 
   return (
-    <section className="py-8 animate-fade-in">
-      <div className="max-w-[1400px] mx-auto px-4">
-        <div className="flex items-end justify-between mb-4">
+    <section className="py-16 md:py-24">
+      <div className="container max-w-[1400px] mx-auto px-4 md:px-8">
+        {/* Section Header */}
+        <div className="flex items-end justify-between mb-10 md:mb-16">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight">{title}</h2>
-            {subtitle && <p className="text-sm text-brand-gray mt-1">{subtitle}</p>}
+            <p className="text-[10px] text-brand-gray tracking-[0.3em] uppercase mb-2">
+              {subtitle}
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{title}</h2>
           </div>
           {viewAllHref && (
-            <Link href={viewAllHref} className="text-sm text-blue-600 hover:underline whitespace-nowrap">
-              XEM TẤT CẢ
+            <Link
+              href={viewAllHref}
+              className="hidden md:flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-brand-gray hover:text-brand-black transition-colors group"
+            >
+              <span>Xem tất cả</span>
+              <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
           )}
         </div>
-        <div className="relative">
-          <button
-            onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border p-1.5 rounded-full shadow hidden sm:flex"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <div
-            ref={scrollRef}
-            className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 scroll-smooth"
-          >
-            {products.map((p) => (
-              <div key={p.id} className="flex-shrink-0 w-[160px] sm:w-[200px]">
-                <ProductCard product={p} />
-              </div>
-            ))}
-          </div>
-          <button
-            onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border p-1.5 rounded-full shadow hidden sm:flex"
-            aria-label="Scroll right"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-        <div className="flex justify-center gap-1.5 mt-2">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-black' : 'bg-gray-300'}`} aria-hidden />
+
+        {/* Product Grid - Editorial Fashion Layout */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-12">
+          {products.map((product, index) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              priority={index < 4}
+            />
           ))}
         </div>
+
+        {/* Mobile View All */}
+        {viewAllHref && (
+          <div className="mt-8 md:hidden">
+            <Link
+              href={viewAllHref}
+              className="block w-full py-4 text-center text-xs font-medium tracking-widest uppercase border border-brand-border hover:bg-brand-black hover:text-white transition-colors"
+            >
+              XEM TẤT CẢ
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

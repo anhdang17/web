@@ -42,11 +42,25 @@ const config: Config = {
           foreground: 'hsl(var(--accent-foreground))',
         },
         brand: {
-          red: '#E60012',
-          black: '#1A1A1A',
-          gray: '#767676',
+          black: '#111111',
+          dark: '#1A1A1A',
+          white: '#FFFFFF',
           light: '#F5F5F5',
+          border: '#EAEAEA',
+          muted: '#DADADA',
+          gray: '#767676',
         },
+      },
+      spacing: {
+        '18': '4.5rem',
+        '22': '5.5rem',
+        '30': '7.5rem',
+      },
+      transitionDuration: {
+        '400': '400ms',
+      },
+      maxWidth: {
+        '8xl': '90rem',
       },
       borderRadius: {
         lg: 'var(--radius)',

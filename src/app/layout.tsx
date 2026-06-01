@@ -11,7 +11,7 @@ const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin', 'vietnamese'],
   variable: '--font-sans',
   display: 'swap',
-  preload: true,
+  weight: ['300', '400', '500', '600', '700', '800'],
 });
 
 export const metadata: Metadata = {
@@ -19,24 +19,17 @@ export const metadata: Metadata = {
     default: 'UNISEX — Thời trang Unisex',
     template: '%s | UNISEX',
   },
-  description: 'Cửa hàng thời trang & phụ kiện unisex — Áo, quần, giày dép, phụ kiện chất lượng cao, giá minh bạch.',
+  description: 'Cửa hàng thời trang & phụ kiện unisex — Áo, quần, giày dép, phụ kiện chất lượng cao.',
   keywords: ['thời trang', 'unisex', 'áo', 'quần', 'giày', 'phụ kiện', 'fashion'],
   authors: [{ name: 'UNISEX' }],
-  creator: 'UNISEX',
-  publisher: 'UNISEX',
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://unisex.vn'),
-  alternates: {
-    canonical: '/',
-    languages: { 'vi-VN': '/vi' },
-  },
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
     url: '/',
     siteName: 'UNISEX',
     title: 'UNISEX — Thời trang Unisex',
-    description: 'Cửa hàng thời trang & phụ kiện unisex — Áo, quần, giày dép, phụ kiện',
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    description: 'Cửa hàng thời trang & phụ kiện unisex',
   },
   twitter: {
     card: 'summary_large_image',
@@ -46,17 +39,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
   icons: {
     icon: '/favicon.svg',
-    apple: '/apple-touch-icon.png',
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://unisex.vn';
-
   return (
     <html lang="vi" className={fontSans.variable}>
       <head>
@@ -71,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <AuthProvider>
             <Header />
-            <main className="min-h-screen">{children}</main>
+            <main>{children}</main>
             <Footer />
           </AuthProvider>
         </Providers>

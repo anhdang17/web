@@ -7,13 +7,13 @@ import {
   Users,
   ShoppingCart,
   Package,
-  TrendingUp,
   CheckCircle,
-  Clock,
   Truck,
   XCircle,
+  Clock,
   DollarSign,
-  BarChart3,
+  TrendingUp,
+  ArrowUpRight,
 } from 'lucide-react';
 
 interface DashboardData {
@@ -36,15 +36,15 @@ interface DashboardData {
   revenueByMonth: Array<{ month: string; revenue: number }>;
 }
 
-const statusLabels: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  PENDING: { label: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-4 h-4" /> },
-  CONFIRMED: { label: 'Đã xác nhận', color: 'bg-blue-100 text-blue-800', icon: <CheckCircle className="w-4 h-4" /> },
-  SHIPPING: { label: 'Đang giao', color: 'bg-purple-100 text-purple-800', icon: <Truck className="w-4 h-4" /> },
-  DELIVERED: { label: 'Đã giao', color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-4 h-4" /> },
-  CANCELLED: { label: 'Đã hủy', color: 'bg-red-100 text-red-800', icon: <XCircle className="w-4 h-4" /> },
+const statusLabels: Record<string, { label: string; color: string }> = {
+  PENDING: { label: 'Chờ xác nhận', color: 'bg-yellow-50 text-yellow-800 border-yellow-100' },
+  CONFIRMED: { label: 'Đã xác nhận', color: 'bg-blue-50 text-blue-800 border-blue-100' },
+  SHIPPING: { label: 'Đang giao', color: 'bg-purple-50 text-purple-800 border-purple-100' },
+  DELIVERED: { label: 'Đã giao', color: 'bg-green-50 text-green-800 border-green-100' },
+  CANCELLED: { label: 'Đã hủy', color: 'bg-red-50 text-red-800 border-red-100' },
 };
 
-const monthNames: Record<string, string> = {
+const monthLabels: Record<string, string> = {
   '01': 'T1', '02': 'T2', '03': 'T3', '04': 'T4',
   '05': 'T5', '06': 'T6', '07': 'T7', '08': 'T8',
   '09': 'T9', '10': 'T10', '11': 'T11', '12': 'T12',
@@ -63,106 +63,69 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="w-10 h-10 border-4 border-brand-red border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-muted-foreground">Đang tải dữ liệu...</p>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-32 bg-brand-light animate-pulse rounded-lg" />
+        ))}
       </div>
     );
   }
 
-  if (!data) {
-    return <div className="text-center py-16 text-brand-gray">Không thể tải dữ liệu dashboard</div>;
-  }
+  if (!data) return <div className="text-center py-16 text-brand-gray">Không thể tải dữ liệu</div>;
 
   const { overview, ordersByStatus, topProducts, revenueByMonth } = data;
   const maxRevenue = Math.max(...revenueByMonth.map((m) => m.revenue), 1);
 
   return (
     <div className="space-y-8">
-      {/* Overview Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatCard
-          icon={<Users className="w-5 h-5" />}
-          label="Tổng khách hàng"
-          value={overview.totalUsers.toLocaleString('vi-VN')}
-          subtext={`+${overview.newUsers} tháng này`}
-          color="bg-blue-50 text-blue-600"
-        />
-        <StatCard
-          icon={<ShoppingCart className="w-5 h-5" />}
-          label="Tổng đơn hàng"
-          value={overview.totalOrders.toLocaleString('vi-VN')}
-          subtext={`${ordersByStatus['PENDING']?.count ?? 0} chờ xử lý`}
-          color="bg-purple-50 text-purple-600"
-        />
-        <StatCard
-          icon={<CheckCircle className="w-5 h-5" />}
-          label="Đã giao thành công"
-          value={(ordersByStatus['DELIVERED']?.count ?? 0).toLocaleString('vi-VN')}
-          subtext={formatPrice(ordersByStatus['DELIVERED']?.revenue ?? 0)}
-          color="bg-green-50 text-green-600"
-        />
-        <StatCard
-          icon={<Package className="w-5 h-5" />}
-          label="Sản phẩm"
-          value={overview.totalProducts.toLocaleString('vi-VN')}
-          subtext="đang bán"
-          color="bg-orange-50 text-orange-600"
-        />
-        <StatCard
-          icon={<DollarSign className="w-5 h-5" />}
-          label="Doanh thu"
-          value={formatPrice(overview.totalRevenue)}
-          subtext="tổng cộng"
-          color="bg-brand-red/10 text-brand-red"
-        />
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <StatCard icon={<Users size={20} />} value={overview.totalUsers} label="Khách hàng" subtext={`+${overview.newUsers} tháng này`} />
+        <StatCard icon={<ShoppingCart size={20} />} value={overview.totalOrders} label="Đơn hàng" subtext={`${ordersByStatus['PENDING']?.count ?? 0} chờ xử lý`} />
+        <StatCard icon={<CheckCircle size={20} />} value={ordersByStatus['DELIVERED']?.count ?? 0} label="Đã giao" subtext={formatPrice(ordersByStatus['DELIVERED']?.revenue ?? 0)} />
+        <StatCard icon={<Package size={20} />} value={overview.totalProducts} label="Sản phẩm" subtext="đang bán" />
+        <StatCard icon={<DollarSign size={20} />} value={formatPrice(overview.totalRevenue)} label="Doanh thu" subtext="tổng cộng" />
       </div>
 
-      {/* Orders by Status */}
-      <div className="bg-card rounded-xl border border-border p-6">
-        <h3 className="text-base font-bold mb-4 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4" />
-          TÌNH TRẠNG ĐƠN HÀNG
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          {Object.entries(ordersByStatus).map(([status, info]) => {
-            const cfg = statusLabels[status] ?? { label: status, color: 'bg-gray-100 text-gray-800', icon: null };
-            return (
-              <div key={status} className={`rounded-lg p-3 ${cfg.color}`}>
-                <div className="flex items-center gap-1.5 mb-1">
-                  {cfg.icon}
-                  <span className="text-xs font-medium truncate">{cfg.label}</span>
+      {/* Orders & Revenue */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Orders by Status */}
+        <div className="border border-border p-6">
+          <h3 className="text-sm font-medium tracking-wider uppercase mb-6">Tình trạng đơn hàng</h3>
+          <div className="space-y-3">
+            {Object.entries(ordersByStatus).map(([status, info]) => {
+              const cfg = statusLabels[status] ?? { label: status, color: 'bg-gray-50 text-gray-800' };
+              return (
+                <div key={status} className={`flex items-center justify-between p-4 border ${cfg.color}`}>
+                  <span className="text-sm font-medium">{cfg.label}</span>
+                  <div className="text-right">
+                    <span className="text-sm font-bold">{info.count}</span>
+                    <span className="text-xs text-brand-gray ml-2">{formatPrice(info.revenue)}</span>
+                  </div>
                 </div>
-                <p className="text-xl font-bold">{info.count}</p>
-                <p className="text-xs opacity-80">{formatPrice(info.revenue)}</p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Revenue Chart & Top Products */}
-      <div className="grid lg:grid-cols-2 gap-6">
         {/* Revenue Chart */}
-        <div className="bg-card rounded-xl border border-border p-6">
-          <h3 className="text-base font-bold mb-4 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4" />
-            DOANH THU 6 THÁNG GẦN NHẤT
+        <div className="border border-border p-6">
+          <h3 className="text-sm font-medium tracking-wider uppercase mb-6 flex items-center gap-2">
+            <TrendingUp size={16} />
+            Doanh thu 6 tháng
           </h3>
-          <div className="flex items-end gap-2 h-40">
+          <div className="flex items-end gap-2 h-48">
             {revenueByMonth.map((item) => {
               const height = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
-              const label = monthNames[item.month.split('-')[1]] ?? item.month;
+              const label = monthLabels[item.month.split('-')[1]] ?? item.month;
               return (
-                <div key={item.month} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full flex flex-col items-center justify-end h-32">
-                    <span className="text-xs font-medium text-muted-foreground mb-1">
+                <div key={item.month} className="flex-1 flex flex-col items-center gap-2">
+                  <div className="w-full flex flex-col items-center justify-end h-40">
+                    <span className="text-[10px] text-brand-gray mb-1">
                       {item.revenue > 0 ? formatPrice(item.revenue) : '—'}
                     </span>
                     <div
-                      className="w-full bg-brand-red/80 rounded-t-sm transition-all hover:bg-brand-red min-h-[4px]"
+                      className="w-full bg-brand-black/10 hover:bg-brand-black/20 transition-colors"
                       style={{ height: `${Math.max(height, 4)}%` }}
                     />
                   </div>
@@ -172,47 +135,38 @@ export default function Dashboard() {
             })}
           </div>
         </div>
+      </div>
 
-        {/* Top 10 Products */}
-        <div className="bg-card rounded-xl border border-border p-6">
-          <h3 className="text-base font-bold mb-4 flex items-center gap-2">
-            <Package className="w-4 h-4" />
-            TOP 10 SẢN PHẨM BÁN CHẠY
-          </h3>
-          <div className="space-y-3 max-h-52 overflow-y-auto">
-            {topProducts.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">Chưa có dữ liệu</p>
-            ) : (
-              topProducts.map((product, index) => (
-                <div key={product.id} className="flex items-center gap-3">
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                    index === 0 ? 'bg-brand-red text-white' :
-                    index === 1 ? 'bg-orange-400 text-white' :
-                    index === 2 ? 'bg-yellow-400 text-white' :
-                    'bg-secondary text-muted-foreground'
-                  }`}>
-                    {index + 1}
-                  </span>
-                  <div className="relative w-10 h-10 rounded overflow-hidden border border-border shrink-0 bg-secondary">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="object-cover w-full h-full"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{product.name}</p>
-                    <p className="text-xs text-muted-foreground">{formatPrice(product.price)}</p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-brand-red">{product.totalSold}</p>
-                    <p className="text-xs text-muted-foreground">đã bán</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+      {/* Top Products */}
+      <div className="border border-border p-6">
+        <h3 className="text-sm font-medium tracking-wider uppercase mb-6">Top sản phẩm bán chạy</h3>
+        <div className="space-y-4">
+          {topProducts.map((product, index) => (
+            <div key={product.id} className="flex items-center gap-4">
+              <span className={`w-6 h-6 flex items-center justify-center text-xs font-bold ${
+                index === 0 ? 'bg-brand-black text-white' :
+                index === 1 ? 'bg-brand-gray text-white' :
+                index === 2 ? 'bg-brand-muted text-white' :
+                'bg-brand-light text-brand-gray'
+              }`}>
+                {index + 1}
+              </span>
+              <div className="relative w-12 h-12 bg-brand-light flex-shrink-0 overflow-hidden">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{product.name}</p>
+                <p className="text-xs text-brand-gray">{formatPrice(product.price)}</p>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <p className="text-sm font-bold">{product.totalSold}</p>
+                <p className="text-xs text-brand-gray">đã bán</p>
+              </div>
+            </div>
+          ))}
+          {topProducts.length === 0 && (
+            <p className="text-sm text-brand-gray text-center py-8">Chưa có dữ liệu</p>
+          )}
         </div>
       </div>
     </div>
@@ -221,25 +175,21 @@ export default function Dashboard() {
 
 function StatCard({
   icon,
-  label,
   value,
+  label,
   subtext,
-  color,
 }: {
   icon: React.ReactNode;
+  value: string | number;
   label: string;
-  value: string;
   subtext: string;
-  color: string;
 }) {
   return (
-    <div className="bg-card rounded-xl border border-border p-4">
-      <div className={`w-10 h-10 rounded-lg ${color} flex items-center justify-center mb-3`}>
-        {icon}
-      </div>
-      <p className="text-2xl font-black mb-0.5">{value}</p>
-      <p className="text-xs text-muted-foreground font-medium">{label}</p>
-      <p className="text-xs text-muted-foreground/70 mt-0.5">{subtext}</p>
+    <div className="border border-border p-4">
+      <div className="text-brand-gray mb-2">{icon}</div>
+      <p className="text-xl md:text-2xl font-bold">{value}</p>
+      <p className="text-xs text-brand-gray mt-0.5">{label}</p>
+      <p className="text-[10px] text-brand-gray mt-0.5">{subtext}</p>
     </div>
   );
 }
